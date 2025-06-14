@@ -1,0 +1,86 @@
+[
+    {
+        "id": "097a7d5f1faade1c",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "mqtt-broker-config",
+        "type": "mqtt-broker",
+        "name": "InverterBroker",
+        "broker": "10.0.2.15",
+        "port": "1883",
+        "clientid": "NodeRED",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "influxdb-config",
+        "type": "influxdb",
+        "hostname": "influxdb",
+        "port": "8086",
+        "protocol": "http",
+        "database": "inverter_db",
+        "name": "InfluxDB_Local",
+        "influxdbVersion": "1.x"
+    },
+    {
+        "id": "mqtt-in-node",
+        "type": "mqtt in",
+        "z": "097a7d5f1faade1c",
+        "name": "Inverter Telemetry",
+        "topic": "inverter/INV001/telemetry",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "mqtt-broker-config",
+        "inputs": 0,
+        "x": 170,
+        "y": 400,
+        "wires": [
+            [
+                "function-parse-json"
+            ]
+        ]
+    },
+    {
+        "id": "function-parse-json",
+        "type": "function",
+        "z": "097a7d5f1faade1c",
+        "name": "Parse & Format",
+        "func": "var data = msg.payload;\nmsg.measurement = \"inverter_data\";\nmsg.fields = { voltage: data.voltage, current: data.current, power: data.power };\nmsg.tags = { inverter_id: data.inverter_id };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 400,
+        "y": 400,
+        "wires": [
+            [
+                "influxdb-out"
+            ]
+        ]
+    },
+    {
+        "id": "influxdb-out",
+        "type": "influxdb out",
+        "z": "097a7d5f1faade1c",
+        "influxdb": "influxdb-config",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "x": 620,
+        "y": 400,
+        "wires": []
+    }
+]

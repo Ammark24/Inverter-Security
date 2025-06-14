@@ -1,0 +1,16 @@
+# scada-server/influxdb/config.toml
+
+[meta]
+  dir = "/var/lib/influxdb/meta"
+
+[data]
+  dir = "/var/lib/influxdb/data"
+  wal-dir = "/var/lib/influxdb/wal"
+
+[http]
+  enabled = true
+  bind-address = ":8086"
+  auth-enabled = false
+
+[logging]
+  level = "info"

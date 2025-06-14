@@ -1,0 +1,76 @@
+[
+    {
+        "id": "mqtt-in-node",
+        "type": "mqtt in",
+        "z": "flow1",
+        "name": "Inverter Telemetry",
+        "topic": "inverter/INV001/telemetry",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "mqtt-broker-config",
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "function-parse-json"
+            ]
+        ]
+    },
+    {
+        "id": "function-parse-json",
+        "type": "function",
+        "z": "flow1",
+        "name": "Parse & Format",
+        "func": "var data = msg.payload;\nmsg.measurement = \"inverter_data\";\nmsg.fields = { voltage: data.voltage, current: data.current, power: data.power };\nmsg.tags = { inverter_id: data.inverter_id };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 380,
+        "y": 100,
+        "wires": [
+            [
+                "influxdb-out"
+            ]
+        ]
+    },
+    {
+        "id": "influxdb-out",
+        "type": "influxdb out",
+        "z": "flow1",
+        "influxdb": "influxdb-config",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "x": 600,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "mqtt-broker-config",
+        "type": "mqtt-broker",
+        "name": "InverterBroker",
+        "broker": "<HOST_IP>",   // e.g., 192.168.56.10
+        "port": "1883",
+        "clientid": "NodeRED",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "influxdb-config",
+        "type": "influxdb",
+        "hostname": "influxdb",
+        "port": "8086",
+        "protocol": "http",
+        "database": "inverter_db",
+        "name": "InfluxDB_Local"
+    }
+]

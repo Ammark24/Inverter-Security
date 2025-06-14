@@ -1,0 +1,15 @@
+# scada-server/grafana/provisioning/datasources/influxdb.yaml
+
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    isDefault: true
+    database: inverter_db
+    user: ""
+    password: ""
+    version: 1
+    editable: false

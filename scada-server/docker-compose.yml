@@ -1,0 +1,38 @@
+# scada-server/docker-compose.yml
+
+services:
+  influxdb:
+    image: influxdb:1.8
+    container_name: influxdb
+    volumes:
+      - ./influxdb/config.toml:/etc/influxdb/influxdb.conf:ro
+      - influxdb_data:/var/lib/influxdb
+    ports:
+      - "8086:8086"
+
+  grafana:
+    image: grafana/grafana:8.0.0
+    container_name: grafana
+    depends_on:
+      - influxdb
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+  node-red:
+    image: nodered/node-red:2.2.2
+    container_name: node_red
+    depends_on:
+      - influxdb
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./node-red:/data
+    environment:
+      - TZ=Australia/Adelaide
+
+volumes:
+  influxdb_data:
