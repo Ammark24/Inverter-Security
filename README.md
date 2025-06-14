@@ -18,8 +18,6 @@ Emulates an inverter’s MPPT/Modbus interfaces and MQTT telemetry, a SCADA stac
    * [SCADA Stack](#2-scada-stack)
    * [Attacker Tools](#3-attacker-tools)
 7. [Example Workflows](#example-workflows)
-8. [Contributing](#contributing)
-9. [License](#license)
 
 ---
 
